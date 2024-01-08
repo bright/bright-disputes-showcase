@@ -1,14 +1,15 @@
 import type { Account } from "~/types";
+import disputeConfig from "~/../../cli/.bright_disputes_config.json";
 
 // @TODO
 export { default as abi } from "./../../contract/target/ink/bright_disputes.json";
 
-export const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS
+export const CONTRACT_ADDRESS = disputeConfig.contract_address;
 
-export const NODE_ADDRESS = process.env.NODE_ADDRESS;
+export const NODE_ADDRESS = disputeConfig.node_address;
 
-export const CLI_BASE_DIR = process.env.CLI_BASE_DIR;
-export const CLI_DIR = process.env.CLI_DIR;
+export const CLI_BASE_DIR ='../cli';
+export const CLI_DIR = '../cli/target/release/bright_disputes_cli';
 
 export const PREDEFINED_ACCOUNTS: Record<string, Account> = {
   OWNER: {
