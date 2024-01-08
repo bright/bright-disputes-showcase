@@ -21,16 +21,15 @@ export default function DisputeDetails() {
   const { dispute, jury } = useLoaderData<typeof loader>();
   const { state, formData} = useNavigation();
   const onAccountClick = useAccountChange();
-  const processRoundEnable = [
-    account?.pubKey === dispute?.owner && dispute.state === 'Running' && dispute.disputeRound?.state !== 'CountingTheVotes',
-    account?.pubKey === dispute?.judge && dispute.disputeRound?.state === 'CountingTheVotes',
-  ].some(Boolean);
+  const processRoundEnable = account?.pubKey === dispute?.owner && dispute.state === 'Running' && dispute.disputeRound?.state !== 'CountingTheVotes';
   const processRoundProcessing = state === 'submitting' && formData?.get('_action') === 'process-dispute-round';
   const confirmDefendantEnable = account?.pubKey === dispute?.defendant && dispute.state === 'Created';
   const confirmJurorEnable = dispute?.juries.includes(account?.pubKey || '') && dispute.disputeRound?.state === 'PickingJuriesAndJudge';
   const confirmJurorProcessing = state === 'submitting' && formData?.get('_action') === 'confirm-juror-participation';
   const confirmJudgeEnable = account?.pubKey === dispute?.judge && dispute.disputeRound?.state === 'PickingJuriesAndJudge';
   const confirmJudgeProcessing = state === 'submitting' && formData?.get('_action') === 'confirm-judge-participation';
+  const countTheVotesEnable = account?.pubKey === dispute?.judge && dispute.disputeRound?.state === 'CountingTheVotes';
+  const countTheVotesProcessing = state === 'submitting' && formData?.get('_action') === 'count-the-votes';
   const voteProcessing = state === 'submitting' && formData?.get('_action') === 'vote';
   const tip = getTip(dispute);
 
@@ -80,6 +79,12 @@ export default function DisputeDetails() {
                     value="confirm-juror-participation"
                     className={btnClasses}>
               {confirmJurorProcessing ? 'Processing...' : 'Confirm juror participation'}
+            </button>
+
+            <button disabled={!countTheVotesEnable} type="submit" name="_action"
+                    value="count-the-votes"
+                    className={btnClasses}>
+              {countTheVotesProcessing ? 'Processing...' : 'Count the votes'}
             </button>
           </Form>
         </div>
