@@ -11,7 +11,7 @@ export async function action({request, params}: ActionFunctionArgs) {
   const {_action, vote} = Object.fromEntries(formData) as Record<string, string>;
   const args = [];
 
-  if (_action === 'vote') {
+  if (['vote', 'count-the-votes'].includes(_action)) {
     const key = session.get(`voting-key_${params.id}_${account?.pubKey}`);
 
     args.push(vote as string, key);
