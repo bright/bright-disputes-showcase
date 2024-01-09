@@ -14,6 +14,7 @@ export default function Index() {
   const { state, formData} = useNavigation();
   const isDeleting = state === 'submitting' && formData?.get('_action') === 'removeDispute';
   const isRegistering = state === 'submitting' && formData?.get('_action') === 'register-as-an-active-juror';
+  const isUnregistering = state === 'submitting' && formData?.get('_action') === 'unregister-as-an-active-juror';
   const { account } = useAppContext();
 
   return (
@@ -32,12 +33,19 @@ export default function Index() {
             <Form method="post">
               <button disabled={jury.includes(account.pubKey)} type="submit" name="_action" value={'register-as-an-active-juror'}
                       className="text-raisin-black bg-primary/90 p-4 hover:bg-primary disabled:bg-primary/30">
-                {isRegistering ? 'Processing...' : 'Register as jury'}
+                {isRegistering ? 'Processing...' : 'Register as a Juror'}
+              </button>
+            </Form>
+
+            <Form method="post">
+              <button disabled={!jury.includes(account.pubKey)} type="submit" name="_action" value={'unregister-as-an-active-juror'}
+                      className="text-raisin-black bg-primary/90 p-4 hover:bg-primary disabled:bg-primary/30">
+                {isUnregistering ? 'Processing...' : 'Unregister as a Juror'}
               </button>
             </Form>
           </div>
-
         </div>
+
         {disputes?.length ? <div>
           <div className="flex flex-col">
             <div className="-m-1.5 overflow-x-auto">
@@ -103,6 +111,7 @@ export default function Index() {
         </div> : <div className={'text-center'}>
           No disputes yet
         </div>}
+
       </div>
     </div>
   );

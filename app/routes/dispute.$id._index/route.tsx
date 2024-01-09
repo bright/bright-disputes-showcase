@@ -39,11 +39,9 @@ export default function DisputeDetails() {
         ? dispute?.disputeRound.state.replace(/([a-z])([A-Z])/g, '$1 $2')
         : '-'
       }</div>
-      <div className={'text-xs'}>
-        (deadline: {dispute?.disputeRound?.stateDeadline
-        ? formatDateTime(dispute.disputeRound.stateDeadline)
-        : ''})
-      </div>
+      {dispute?.disputeRound?.stateDeadline && <div className={'text-xs'}>
+        (deadline: {formatDateTime(dispute.disputeRound.stateDeadline)})
+      </div>}
     </>
   }
 
@@ -168,16 +166,6 @@ export default function DisputeDetails() {
           <div className={'flex flex-col'}>
             <div className={'text-end text-xs mb-1 uppercase underline'}>Dispute result</div>
             <div className={'text-end lowercase'}>{dispute?.disputeResult ? dispute?.disputeResult : '-'}</div>
-          </div>
-          <div className={'flex flex-col'}>
-            <div className={'text-end text-xs mb-1 uppercase underline'}>Voted</div>
-            <div className={'text-end flex flex-col gap-3 py-1'}>
-              {dispute?.votes?.length ? dispute?.votes.map(({ juror}) =>
-                <div key={juror} className={'flex items-center justify-end'}>
-                  <Account address={juror} onClick={() => onAccountClick(juror)}/>
-                </div>
-              ) : '-'}
-            </div>
           </div>
         </div>
 
