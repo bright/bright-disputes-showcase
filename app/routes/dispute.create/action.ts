@@ -29,10 +29,7 @@ export async function action({ request }: ActionFunctionArgs) {
     return json({ errors });
   }
 
-  session.flash('feedback', {
-    status: !!result,
-    cmd: result ? result.cmd : null,
-  });
+  session.flash('feedback', result);
 
   return redirect('/', {
     headers: {

@@ -19,17 +19,14 @@ export async function action({request, params}: ActionFunctionArgs) {
 
   const result = run(_action as string, account?.seed as string, params.id as string, ...args);
 
-  if (['confirm-juror-participation', 'confirm-judge-participation'].includes(_action) && !!result) {
+  if (['confirm-juror-participation', 'confirm-judge-participation'].includes(_action) && !!result.payload) {
     const keys = [...result.payload.matchAll(/\[[\w\s,]+\]/g)].map(i => i[0])
       .map(rawKey => JSON.parse(rawKey).join(','));
 
     session.set(`voting-key_${params.id}_${account?.pubKey}`, keys[1]);
   }
 
-  session.flash('feedback', {
-    status: !!result,
-    cmd: result ? result.cmd : null,
-  });
+  session.flash('feedback', result);
 
   return redirect(`/dispute/${params.id}`, {
     headers: {

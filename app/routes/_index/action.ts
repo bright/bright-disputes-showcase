@@ -28,10 +28,7 @@ export async function action({request}: ActionFunctionArgs) {
   } else {
     const result = run(_action, account?.seed || '');
 
-    session.flash('feedback', {
-      status: !!result,
-      cmd: result ? result.cmd : null,
-    });
+    session.flash('feedback', result);
   }
 
   return redirect('/', {

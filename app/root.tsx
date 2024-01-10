@@ -38,8 +38,9 @@ export async function action({request}: ActionFunctionArgs) {
 export async function loader({request}: LoaderFunctionArgs) {
   const session = await getSession(request.headers.get('Cookie'));
   const feedback = session.get('feedback') as undefined | {
-    cmd: string
-    payload: string
+    status: boolean
+    cmd?: string
+    payload?: string
   };
   const accounts = Object.values(PREDEFINED_ACCOUNTS);
   const userPubKey = session.get('userPubKey');
@@ -55,10 +56,10 @@ export async function loader({request}: LoaderFunctionArgs) {
   );
 }
 
-const Msg = ({ status, msg }: { status: boolean, msg: string }) => {
+const Msg = ({ status, cmd, payload }: { status: boolean, cmd?: string, payload?: string }) => {
   return (
     <div className={'font-mono'}>
-      <div>$ {msg}</div>
+      <div>{cmd}</div>
       <div>-- {status ? 'SUCCESS' : 'FAIL'} --</div>
     </div>
   )
@@ -71,7 +72,7 @@ export default function Main() {
     if (!feedback) return;
 
     const id = setTimeout(() => {
-      toast.success(<Msg status={!!feedback} msg={feedback.cmd} />)
+      toast[feedback.status ? 'success' : 'warn'](<Msg {...feedback} />)
     });
 
     return () => clearTimeout(id);
