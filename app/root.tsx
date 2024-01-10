@@ -39,7 +39,7 @@ export async function loader({request}: LoaderFunctionArgs) {
   const session = await getSession(request.headers.get('Cookie'));
   const feedback = session.get('feedback') as undefined | {
     status: boolean
-    cmd?: string
+    cmd: string
     payload?: string
   };
   const accounts = Object.values(PREDEFINED_ACCOUNTS);
@@ -56,10 +56,13 @@ export async function loader({request}: LoaderFunctionArgs) {
   );
 }
 
-const Msg = ({ status, cmd, payload }: { status: boolean, cmd?: string, payload?: string }) => {
+const Msg = ({ status, cmd }: { status: boolean, cmd: string }) => {
+  const maxLength = 80;
+  const ellipsis = ' (...)';
+
   return (
     <div className={'font-mono'}>
-      <div>{cmd}</div>
+      <div>{cmd.length > maxLength + ellipsis.length ? `${cmd.substring(0, maxLength)}${ellipsis}` : cmd}</div>
       <div>-- {status ? 'SUCCESS' : 'FAIL'} --</div>
     </div>
   )
