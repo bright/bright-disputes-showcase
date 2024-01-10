@@ -13,19 +13,27 @@ export async function action({request}: ActionFunctionArgs) {
 
   if (_action === 'removeDispute') {
     try {
-      await transaction(account?.seed || '', _action, id);
+      const status = await transaction(account?.seed || '', _action, id);
 
-      return true;
+      session.flash('feedback', {
+        status,
+        cmd: `API call: ${_action} ${id}`
+      });
     } catch (err) {
-      return false;
+      session.flash('feedback', {
+        status: false,
+        cmd: `API call: ${_action} ${id}`
+      });
     }
+  } else {
+    const result = run(_action, account?.seed || '');
+
+    session.flash('feedback', {
+      status: !!result,
+      cmd: result ? result.cmd : null,
+    });
   }
 
-  const result = run(_action, account?.seed || '');
-
-  session.flash('feedback', {
-    status: result,
-  });
   return redirect('/', {
     headers: {
       "Set-Cookie": await commitSession(session),

@@ -28,6 +28,7 @@ export async function action({request, params}: ActionFunctionArgs) {
 
   session.flash('feedback', {
     status: !!result,
+    cmd: result ? result.cmd : null,
   });
 
   return redirect(`/dispute/${params.id}`, {

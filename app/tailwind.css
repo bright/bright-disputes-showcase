@@ -8,4 +8,5 @@
 :root {
     --toastify-color-progress-dark: #E0FF38;
     --toastify-color-progress-success: #E0FF38;
+    --toastify-toast-width: max-content;
 }

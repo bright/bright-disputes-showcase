@@ -37,7 +37,10 @@ export async function action({request}: ActionFunctionArgs) {
 
 export async function loader({request}: LoaderFunctionArgs) {
   const session = await getSession(request.headers.get('Cookie'));
-  const feedback = session.get('feedback') as undefined | { status: boolean };
+  const feedback = session.get('feedback') as undefined | {
+    cmd: string
+    payload: string
+  };
   const accounts = Object.values(PREDEFINED_ACCOUNTS);
   const userPubKey = session.get('userPubKey');
   const account = accounts.find(({pubKey}) => pubKey === userPubKey) || accounts[0];
@@ -52,14 +55,23 @@ export async function loader({request}: LoaderFunctionArgs) {
   );
 }
 
+const Msg = ({ status, msg }: { status: boolean, msg: string }) => {
+  return (
+    <div className={'font-mono'}>
+      <div>$ {msg}</div>
+      <div>-- {status ? 'SUCCESS' : 'FAIL'} --</div>
+    </div>
+  )
+}
+
 export default function Main() {
   const {feedback, account, accounts} = useLoaderData<typeof loader>();
 
   useEffect(() => {
-    if (feedback === undefined) return;
+    if (!feedback) return;
 
     const id = setTimeout(() => {
-      feedback.status ? toast.success('Success!') : toast.warning('Failed!')
+      toast.success(<Msg status={!!feedback} msg={feedback.cmd} />)
     });
 
     return () => clearTimeout(id);

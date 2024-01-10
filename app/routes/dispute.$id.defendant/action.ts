@@ -23,7 +23,8 @@ export async function action({request, params}: ActionFunctionArgs) {
   const result = run('confirm-defendant' as string, account?.seed as string, params.id as string, link as string);
 
   session.flash('feedback', {
-    status: result,
+    status: !!result,
+    cmd: result ? result.cmd : null,
   });
 
   return redirect(`/dispute/${params.id}`, {

@@ -30,7 +30,8 @@ export async function action({ request }: ActionFunctionArgs) {
   }
 
   session.flash('feedback', {
-    status: result,
+    status: !!result,
+    cmd: result ? result.cmd : null,
   });
 
   return redirect('/', {
