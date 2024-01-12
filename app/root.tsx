@@ -48,7 +48,14 @@ export async function loader({request}: LoaderFunctionArgs) {
   const userPubKey = accountStorage.get('userPubKey');
   const account = accounts.find(({pubKey}) => pubKey === userPubKey) || accounts[0];
 
-  return json({account, accounts, feedback});
+  return json(
+    {account, accounts, feedback},
+    {
+      headers: {
+        "Set-Cookie": await dataSession.commitSession(dataStorage),
+      },
+    }
+  );
 }
 
 const Msg = ({ status, cmd }: { status: boolean, cmd: string }) => {

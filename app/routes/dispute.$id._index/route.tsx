@@ -18,7 +18,7 @@ export const meta: MetaFunction = ({ params }) => {
 export default function DisputeDetails() {
   const params = useParams();
   const { account } = useAppContext();
-  const { dispute, jury } = useLoaderData<typeof loader>();
+  const { dispute, jury, dataKeys } = useLoaderData<typeof loader>();
   const { state, formData} = useNavigation();
   const onAccountClick = useAccountChange();
   const processRoundEnable = account?.pubKey === dispute?.owner && dispute.state === 'Running' && dispute.disputeRound?.state !== 'CountingTheVotes';
@@ -180,7 +180,8 @@ export default function DisputeDetails() {
             <div className={'flex flex-col gap-3 py-1'}>
               {dispute?.juries.length ? dispute?.juries.map(member => <div className={'flex content-center gap-2'} key={member}>
                 <Account address={member} onClick={() => onAccountClick(member)}/>
-                {dispute.votes?.map(o => o.juror).includes(member) ? '(voted)' : ''}
+                {dataKeys.includes(`voting-key_${params.id}_${member}`) ? ' (registered)' : ''}
+                {dispute.votes?.map(o => o.juror).includes(member) ? ' voted!' : ''}
               </div>) : '-'}
             </div>
           </div>
