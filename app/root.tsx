@@ -13,7 +13,7 @@ import { redirect, json } from '@remix-run/node';
 import AppContextProvider from './context';
 import { toast, ToastContainer } from "react-toastify";
 import { useEffect } from "react";
-import { dataSession } from "~/sessions";
+import { dataSession, accountSession } from "~/sessions";
 import { PREDEFINED_ACCOUNTS } from "~/config";
 import { Header } from "~/components/Header";
 
@@ -22,7 +22,7 @@ export const links: LinksFunction = () => [
 ];
 
 export async function action({request}: ActionFunctionArgs) {
-  const session = await dataSession.getSession(request.headers.get("Cookie"));
+  const session = await accountSession.getSession(request.headers.get("Cookie"));
   const formData = await request.formData();
   const {userPubKey, redirectTo} = Object.fromEntries(formData) as Record<string, string>;
 
@@ -30,30 +30,25 @@ export async function action({request}: ActionFunctionArgs) {
 
   return redirect(redirectTo, {
     headers: {
-      "Set-Cookie": await dataSession.commitSession(session),
+      "Set-Cookie": await accountSession.commitSession(session),
     },
   })
 }
 
 export async function loader({request}: LoaderFunctionArgs) {
-  const session = await dataSession.getSession(request.headers.get('Cookie'));
-  const feedback = session.get('feedback') as undefined | {
+  const cookieHeader = request.headers.get('Cookie');
+  const dataStorage = await dataSession.getSession(cookieHeader);
+  const accountStorage = await accountSession.getSession(cookieHeader);
+  const feedback = dataStorage.get('feedback') as undefined | {
     status: boolean
     cmd: string
     payload?: string
   };
   const accounts = Object.values(PREDEFINED_ACCOUNTS);
-  const userPubKey = session.get('userPubKey');
+  const userPubKey = accountStorage.get('userPubKey');
   const account = accounts.find(({pubKey}) => pubKey === userPubKey) || accounts[0];
 
-  return json(
-    {account, accounts, feedback},
-    {
-      headers: {
-        "Set-Cookie": await dataSession.commitSession(session),
-      },
-    }
-  );
+  return json({account, accounts, feedback});
 }
 
 const Msg = ({ status, cmd }: { status: boolean, cmd: string }) => {
