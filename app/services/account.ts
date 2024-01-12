@@ -1,8 +1,8 @@
-import { getSession } from "~/sessions";
+import { accountSession } from "~/sessions";
 import { PREDEFINED_ACCOUNTS } from "~/config";
 
 export const getActiveAccount = async (request: Request) => {
-  const session = await getSession(request.headers.get("Cookie"));
+  const session = await accountSession.getSession(request.headers.get("Cookie"));
   const userPubKey = session.get('userPubKey');
 
   if (!userPubKey) return PREDEFINED_ACCOUNTS['OWNER'];

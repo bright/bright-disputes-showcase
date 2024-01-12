@@ -13,7 +13,7 @@ import { redirect, json } from '@remix-run/node';
 import AppContextProvider from './context';
 import { toast, ToastContainer } from "react-toastify";
 import { useEffect } from "react";
-import { commitSession, getSession } from "~/sessions";
+import { dataSession } from "~/sessions";
 import { PREDEFINED_ACCOUNTS } from "~/config";
 import { Header } from "~/components/Header";
 
@@ -22,7 +22,7 @@ export const links: LinksFunction = () => [
 ];
 
 export async function action({request}: ActionFunctionArgs) {
-  const session = await getSession(request.headers.get("Cookie"));
+  const session = await dataSession.getSession(request.headers.get("Cookie"));
   const formData = await request.formData();
   const {userPubKey, redirectTo} = Object.fromEntries(formData) as Record<string, string>;
 
@@ -30,13 +30,13 @@ export async function action({request}: ActionFunctionArgs) {
 
   return redirect(redirectTo, {
     headers: {
-      "Set-Cookie": await commitSession(session),
+      "Set-Cookie": await dataSession.commitSession(session),
     },
   })
 }
 
 export async function loader({request}: LoaderFunctionArgs) {
-  const session = await getSession(request.headers.get('Cookie'));
+  const session = await dataSession.getSession(request.headers.get('Cookie'));
   const feedback = session.get('feedback') as undefined | {
     status: boolean
     cmd: string
@@ -50,7 +50,7 @@ export async function loader({request}: LoaderFunctionArgs) {
     {account, accounts, feedback},
     {
       headers: {
-        "Set-Cookie": await commitSession(session),
+        "Set-Cookie": await dataSession.commitSession(session),
       },
     }
   );

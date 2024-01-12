@@ -1,12 +1,12 @@
 import type { ActionFunctionArgs} from "@remix-run/node";
 import { redirect } from "@remix-run/node";
-import { commitSession, getSession } from "~/sessions";
+import { dataSession } from "~/sessions";
 import { getActiveAccount } from "~/services/account";
 import { transaction } from "~/services/api";
 import { run } from "~/services/cli";
 
 export async function action({request}: ActionFunctionArgs) {
-  const session = await getSession(request.headers.get("Cookie"));
+  const session = await dataSession.getSession(request.headers.get("Cookie"));
   const formData = await request.formData();
   const {_action, id} = Object.fromEntries(formData) as { _action: string, id: string };
   const account = await getActiveAccount(request);
@@ -33,7 +33,7 @@ export async function action({request}: ActionFunctionArgs) {
 
   return redirect('/', {
     headers: {
-      "Set-Cookie": await commitSession(session),
+      "Set-Cookie": await dataSession.commitSession(session),
     },
   })
 }

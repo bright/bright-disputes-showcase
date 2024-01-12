@@ -1,12 +1,12 @@
 import type { ActionFunctionArgs} from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { getActiveAccount } from "~/services/account";
-import { commitSession, getSession } from "~/sessions";
+import { dataSession } from "~/sessions";
 import { run } from "~/services/cli";
 
 export async function action({request, params}: ActionFunctionArgs) {
   const account = await getActiveAccount(request);
-  const session = await getSession(request.headers.get("Cookie"));
+  const session = await dataSession.getSession(request.headers.get("Cookie"));
   const formData = await request.formData();
   const {_action, vote} = Object.fromEntries(formData) as Record<string, string>;
   const args = [];
@@ -30,7 +30,7 @@ export async function action({request, params}: ActionFunctionArgs) {
 
   return redirect(`/dispute/${params.id}`, {
     headers: {
-      "Set-Cookie": await commitSession(session),
+      "Set-Cookie": await dataSession.commitSession(session),
     },
   })
 }
