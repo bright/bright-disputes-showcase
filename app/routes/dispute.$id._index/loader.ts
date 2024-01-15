@@ -2,7 +2,7 @@ import { json, LoaderFunctionArgs } from "@remix-run/node";
 import { getActiveAccount } from "~/services/account";
 import { query } from "~/services/api";
 import type { Dispute } from "~/types";
-import { dataSession, accountSession } from "~/sessions";
+import { dataSession } from "~/sessions";
 
 export async function loader({ params, request }: LoaderFunctionArgs) {
   const account = await getActiveAccount(request);

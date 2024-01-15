@@ -4,9 +4,10 @@ import { useAccountChange } from "~/hooks/useAccountChange";
 import { useAppContext } from "~/context";
 import { getTip } from "~/utils/getTip";
 import type { loader } from "./loader";
-import type { Dispute } from "~/types";
 import type { MetaFunction } from "@remix-run/node";
-import { formatDateTime } from "~/utils/formatDateTime";
+import { Confirm } from "~/components/icons/Confirm";
+import { Vote } from "~/components/icons/Vote";
+import { Status } from "~/components/Status";
 
 const btnClasses = 'text-raisin-black bg-primary/90 p-4 hover:bg-primary disabled:bg-primary/30';
 
@@ -32,18 +33,6 @@ export default function DisputeDetails() {
   const countTheVotesProcessing = state === 'submitting' && formData?.get('_action') === 'count-the-votes';
   const voteProcessing = state === 'submitting' && formData?.get('_action') === 'vote';
   const tip = getTip(dispute);
-
-  const Status = ({ dispute }: { dispute: Dispute }) => {
-    return <>
-      <div>{dispute?.disputeRound
-        ? dispute?.disputeRound.state.replace(/([a-z])([A-Z])/g, '$1 $2')
-        : '-'
-      }</div>
-      {dispute?.disputeRound?.stateDeadline && <div className={'text-xs'}>
-        (deadline: {formatDateTime(dispute.disputeRound.stateDeadline)})
-      </div>}
-    </>
-  }
 
   return (
     <div className="p-4 backdrop-blur-3xl bg-raisin-black/50 rounded-lg grid gap-4">
@@ -173,15 +162,23 @@ export default function DisputeDetails() {
           <div className={'flex flex-col gap-1'}>
             <div className={'text-xs uppercase mb-1 underline'}>Judge</div>
             <div className={'py-1'}>{dispute?.judge ?
-              <Account address={dispute?.judge} onClick={() => onAccountClick(dispute?.judge || '')}/> : '-'}</div>
+              <Account address={dispute?.judge} onClick={() => onAccountClick(dispute?.judge || '')}/> : '-'}
+              {dataKeys.includes(`voting-key_${params.id}_${dispute?.judge}`) ? <span title="Confirmed">
+                <Confirm class={'fill-primary'} />
+              </span> : ''}
+            </div>
           </div>
           <div className={'flex flex-col gap-1'}>
             <div className={'text-xs uppercase mb-1 underline'}>Juries</div>
             <div className={'flex flex-col gap-3 py-1'}>
-              {dispute?.juries.length ? dispute?.juries.map(member => <div className={'flex content-center gap-2'} key={member}>
+              {dispute?.juries.length ? dispute?.juries.map(member => <div className={'flex content-center gap-2 items-center'} key={member}>
                 <Account address={member} onClick={() => onAccountClick(member)}/>
-                {dataKeys.includes(`voting-key_${params.id}_${member}`) ? ' (registered)' : ''}
-                {dispute.votes?.map(o => o.juror).includes(member) ? ' voted!' : ''}
+                {dataKeys.includes(`voting-key_${params.id}_${member}`) ? <span title="Confirmed">
+                  <Confirm class={'fill-primary'} />
+                </span> : ''}
+                {dispute.votes?.map(o => o.juror).includes(member) ? <span title="Voted">
+                  <Vote class={'fill-primary'}  />
+                </span> : ''}
               </div>) : '-'}
             </div>
           </div>

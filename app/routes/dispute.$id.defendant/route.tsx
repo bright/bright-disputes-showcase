@@ -12,7 +12,7 @@ export default function ConfirmDefendant() {
   const actionData = useActionData<typeof action>();
 
   return (
-    <div className={'h-screen flex items-center justify-center'}>
+    <div className={'flex items-center justify-center h-[calc(100vh_-_130px)]'}>
       <div className="p-4 backdrop-blur-3xl bg-raisin-black/50 rounded-lg grid gap-4 w-[450px] mb-[200px]">
         <Form method="post" className={'flex flex-col gap-4'}>
           <div>

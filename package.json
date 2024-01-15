@@ -3,13 +3,11 @@
   "sideEffects": false,
   "type": "module",
   "scripts": {
-    "build": "remix build",
     "dev": "remix dev --manual",
-    "start": "remix-serve ./build/index.js",
     "tailwind": "tailwindcss build app/tailwind.css -o public/tailwind.css",
     "typecheck": "tsc",
     "test": "vitest",
-    "showcase": "remix build; dotenv -e .env remix-serve ./build/index.js"
+    "start": "remix build; dotenv -e .env remix-serve ./build/index.js"
   },
   "dependencies": {
     "@headlessui-float/react": "^0.13.0",

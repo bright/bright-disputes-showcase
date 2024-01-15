@@ -26,7 +26,7 @@ export const Account = ({ account, size, address, onClick: onClickProp }: Accoun
   }
 
   return (
-    <span className={`inline-flex items-center bg-red ${onClickProp ? 'cursor-pointer' : ''}`} onClick={() => onClick()}>
+    <span className={`inline-flex items-center bg-red h-[30px] ${onClickProp ? 'cursor-pointer' : ''}`} onClick={() => onClick()}>
       <Identicon value={account ? account.pubKey : address} size={size || 24} theme='polkadot'/>
       <span className='ml-3 block truncate'>{label}</span>
     </span>

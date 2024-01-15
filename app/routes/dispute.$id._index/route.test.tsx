@@ -13,7 +13,7 @@ test('Dispute details route renders proper actions', async () => {
       path: '/',
       Component: DisputeDetails,
       loader() {
-        return json({ dispute: newDispute });
+        return json({ dispute: newDispute, jury: [], dataKeys: [] });
       },
     },
   ]);
