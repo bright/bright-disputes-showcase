@@ -15,7 +15,7 @@ npm install
 Running the app
 
 ```sh
-npm run showcase
+npm run start
 ```
 
 [node]: https://nodejs.org/
